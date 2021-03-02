@@ -308,15 +308,16 @@ void ADCPollingMethodUpdate() {
 	Switch[0] = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
 	if (Switch[0] == 0 && Switch[1] == 1)
 	{
-		if(ADCMode == 0)
+		if(ADCMode == 1)
 		{
 			HAL_ADC_ConfigChannel(&hadc1, &ADCChannel[0].Config);
 			HAL_ADC_Start(&hadc1);
 			HAL_ADC_PollForConversion(&hadc1, 5);
 			ADCChannel[0].data = HAL_ADC_GetValue(&hadc1);
 			HAL_ADC_Stop(&hadc1);
-			ADCOutputConverted = (ADCChannel[0].data / 1024.0)*500.0;
-			ADCMode = 1;
+			ADCOutputConverted = ((ADCChannel[0].data /4096.0) *3.3)* 1000;
+//			ADCChannel[1].data = 0;
+			ADCMode = 0;
 		}
 		else
 		{
@@ -325,10 +326,9 @@ void ADCPollingMethodUpdate() {
 			HAL_ADC_PollForConversion(&hadc1, 5);
 			ADCChannel[1].data = HAL_ADC_GetValue(&hadc1);
 			HAL_ADC_Stop(&hadc1);
-//			ADCOutputConverted[1].data = ((ADCOutputConverted[1].data - V25) / Avg_Slope)+25;
 //			ADCChannel[0].data = 0;
-//			ADCOutputConverted = (((ADCChannel[1].data / 1024.0)*500.0 - V25) / Avg_Slope)+25;
-			ADCMode = 0;
+			ADCOutputConverted = ((((ADCChannel[1].data / 4096.0)*3.3)*1000 - V25) / Avg_Slope)+25;
+			ADCMode = 1;
 		}
 	}
 	Switch[1] = Switch[0];
