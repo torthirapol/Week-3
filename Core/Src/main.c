@@ -49,7 +49,7 @@ uint16_t adcdata[2] = { 0 };
 int ADCMode = 0;
 float ADCOutputConverted;
 float Avg_Slope = 2.5;
-int V25 = 760;
+int V25 = 760; // mV
 typedef struct {
 	ADC_ChannelConfTypeDef Config;
 	uint32_t data;
@@ -316,7 +316,6 @@ void ADCPollingMethodUpdate() {
 			ADCChannel[0].data = HAL_ADC_GetValue(&hadc1);
 			HAL_ADC_Stop(&hadc1);
 			ADCOutputConverted = ((ADCChannel[0].data /4096.0) *3.3)* 1000;
-//			ADCChannel[1].data = 0;
 			ADCMode = 0;
 		}
 		else
@@ -326,7 +325,6 @@ void ADCPollingMethodUpdate() {
 			HAL_ADC_PollForConversion(&hadc1, 5);
 			ADCChannel[1].data = HAL_ADC_GetValue(&hadc1);
 			HAL_ADC_Stop(&hadc1);
-//			ADCChannel[0].data = 0;
 			ADCOutputConverted = ((((ADCChannel[1].data / 4096.0)*3.3)*1000 - V25) / Avg_Slope)+25;
 			ADCMode = 1;
 		}
